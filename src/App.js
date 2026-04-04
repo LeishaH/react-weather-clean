@@ -1,4 +1,5 @@
 import React from "react";
+import Weather from "./Weather";
 import "./App.css";
 
 export default function App() {
@@ -7,7 +8,7 @@ export default function App() {
       <div className="container text-center mt-5">
         <h1 className="mb-4">Weather App</h1>
 
-        <button className="btn btn-danger mb-3">TEST BUTTON</button>
+        <Weather />
 
         <footer>
           <p>This project was coded by Leisha Henry and is</p>
