@@ -1,15 +1,10 @@
 .App {
-  max-width: 600px;
+  max-width: 760px;
   margin: 30px auto;
 }
+
 .App footer {
   font-size: 11px;
   margin: 10px 0;
-}
-.Weather {
-  font-family: arial, sans-serif;
-  border: 1px solid #dadde1;
-  padding: 16px;
-  border-radius: 4px;
-  color: rgb(135, 135, 135);
+  text-align: center;
 }
