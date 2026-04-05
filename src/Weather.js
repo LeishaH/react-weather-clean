@@ -35,9 +35,9 @@ export default function Weather(props) {
     setReady(true);
   }
 
-  function search() {
-    const apiKey = "YOUR_API_KEY";
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+  function search(searchCity) {
+    const apiKey = "a9c092c708c00640711b6710710e3aff";
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${apiKey}&units=metric`;
 
     axios
       .get(apiUrl)
@@ -49,7 +49,7 @@ export default function Weather(props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    search();
+    search(city);
   }
 
   function handleCityChange(event) {
@@ -57,15 +57,7 @@ export default function Weather(props) {
   }
 
   useEffect(() => {
-    const apiKey = "a9c092c708c00640711b6710710e3aff";
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${props.defaultCity}&appid=${apiKey}&units=metric`;
-
-    axios
-      .get(apiUrl)
-      .then(handleResponse)
-      .catch(function (error) {
-        console.log("ERROR:", error);
-      });
+    search(props.defaultCity);
   }, [props.defaultCity]);
 
   if (!ready) {
@@ -84,6 +76,7 @@ export default function Weather(props) {
               autoFocus
               name="city"
               onChange={handleCityChange}
+              value={city}
             />
           </div>
           <div className="col-3">
