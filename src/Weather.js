@@ -6,6 +6,7 @@ export default function Weather(props) {
   const [ready, setReady] = useState(false);
   const [city, setCity] = useState(props.defaultCity);
   const [weatherData, setWeatherData] = useState({});
+  const [error, setError] = useState("");
 
   function formatTime(timestamp) {
     let date = new Date(timestamp * 1000);
@@ -32,18 +33,37 @@ export default function Weather(props) {
       icon: `https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
     });
 
+    setError("");
     setReady(true);
   }
 
   function search(searchCity) {
-    const apiKey = "YOUR_API_KEY";
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${apiKey}&units=metric`;
+    const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY;
+
+    if (!apiKey) {
+      setError("Missing API key.");
+      setReady(false);
+      return;
+    }
+
+    const cleanedCity = searchCity.trim();
+
+    if (!cleanedCity) {
+      setError("Please enter a city.");
+      setReady(false);
+      return;
+    }
+
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+      cleanedCity,
+    )}&appid=${apiKey}&units=metric`;
 
     axios
       .get(apiUrl)
       .then(handleResponse)
-      .catch(function (error) {
-        console.log("ERROR:", error);
+      .catch(function () {
+        setError("City not found or weather data unavailable.");
+        setReady(false);
       });
   }
 
@@ -57,15 +77,7 @@ export default function Weather(props) {
   }
 
   useEffect(() => {
-    const apiKey = "a9c092c708c00640711b6710710e3aff";
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${props.defaultCity}&appid=${apiKey}&units=metric`;
-
-    axios
-      .get(apiUrl)
-      .then(handleResponse)
-      .catch(function (error) {
-        console.log("ERROR:", error);
-      });
+    search(props.defaultCity);
   }, [props.defaultCity]);
 
   return (
@@ -75,7 +87,7 @@ export default function Weather(props) {
           <div className="col-9">
             <input
               type="search"
-              placeholder="Enter a city.."
+              placeholder="Enter a city..."
               className="form-control"
               autoFocus
               name="city"
@@ -93,7 +105,11 @@ export default function Weather(props) {
         </div>
       </form>
 
-      {ready ? (
+      {error ? (
+        <div className="weather-body">
+          <p>{error}</p>
+        </div>
+      ) : ready ? (
         <div className="weather-body">
           <div className="overview">
             <h1>{weatherData.city}</h1>
