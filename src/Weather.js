@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "./Weather.css";
 
@@ -37,7 +37,7 @@ export default function Weather(props) {
     setReady(true);
   }
 
-  function search(searchCity) {
+  const search = useCallback((searchCity) => {
     const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY;
 
     if (!apiKey) {
@@ -65,7 +65,7 @@ export default function Weather(props) {
         setError("City not found or weather data unavailable.");
         setReady(false);
       });
-  }
+  }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -78,7 +78,7 @@ export default function Weather(props) {
 
   useEffect(() => {
     search(props.defaultCity);
-  }, [props.defaultCity]);
+  }, [props.defaultCity, search]);
 
   return (
     <div className="Weather">
