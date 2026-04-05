@@ -36,7 +36,7 @@ export default function Weather(props) {
   }
 
   function search(searchCity) {
-    const apiKey = "a9c092c708c00640711b6710710e3aff";
+    const apiKey = "YOUR_API_KEY";
     const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${apiKey}&units=metric`;
 
     axios
@@ -57,7 +57,15 @@ export default function Weather(props) {
   }
 
   useEffect(() => {
-    search(props.defaultCity);
+    const apiKey = "a9c092c708c00640711b6710710e3aff";
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${props.defaultCity}&appid=${apiKey}&units=metric`;
+
+    axios
+      .get(apiUrl)
+      .then(handleResponse)
+      .catch(function (error) {
+        console.log("ERROR:", error);
+      });
   }, [props.defaultCity]);
 
   return (
