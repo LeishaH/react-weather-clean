@@ -1,10 +1,72 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./Weather.css";
 
-export default function Weather() {
+export default function Weather(props) {
+  const [ready, setReady] = useState(false);
+  const [city, setCity] = useState(props.defaultCity);
+  const [weatherData, setWeatherData] = useState({});
+
+  function formatTime(timestamp) {
+    let date = new Date(timestamp * 1000);
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+
+    if (minutes < 10) {
+      minutes = `0${minutes}`;
+    }
+
+    return `${hours}:${minutes}`;
+  }
+
+  function handleResponse(response) {
+    setWeatherData({
+      city: response.data.name,
+      description:
+        response.data.weather[0].description.charAt(0).toUpperCase() +
+        response.data.weather[0].description.slice(1),
+      temperature: Math.round(response.data.main.temp),
+      humidity: response.data.main.humidity,
+      wind: Math.round(response.data.wind.speed),
+      time: response.data.dt,
+      icon: `https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
+    });
+
+    setReady(true);
+  }
+
+  function search() {
+    const apiKey = "a9c092c708c00640711b6710710e3aff";
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    axios
+      .get(apiUrl)
+      .then(handleResponse)
+      .catch(function (error) {
+        console.log("ERROR:", error);
+      });
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    search();
+  }
+
+  function handleCityChange(event) {
+    setCity(event.target.value);
+  }
+
+  useEffect(() => {
+    search();
+  }, []);
+
+  if (!ready) {
+    return <div className="Weather">Loading...</div>;
+  }
+
   return (
     <div className="Weather">
-      <form className="mb-4">
+      <form className="mb-4" onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-9">
             <input
@@ -12,6 +74,8 @@ export default function Weather() {
               placeholder="Enter a city.."
               className="form-control"
               autoFocus
+              name="city"
+              onChange={handleCityChange}
             />
           </div>
           <div className="col-3">
@@ -26,29 +90,28 @@ export default function Weather() {
 
       <div className="weather-body">
         <div className="overview">
-          <h1>New York</h1>
+          <h1>{weatherData.city}</h1>
           <ul>
-            <li>Wednesday 07:00</li>
-            <li>Mostly Cloudy</li>
+            <li>{formatTime(weatherData.time)}</li>
+            <li>{weatherData.description}</li>
           </ul>
         </div>
 
         <div className="weather-data">
           <div className="weather-temperature">
             <img
-              src="https://ssl.gstatic.com/onebox/weather/64/partly_cloudy.png"
-              alt="Mostly Cloudy"
+              src={weatherData.icon}
+              alt={weatherData.description}
               className="weather-icon"
             />
-            <span className="temperature">6</span>
+            <span className="temperature">{weatherData.temperature}</span>
             <span className="unit">°C</span>
           </div>
 
           <div className="weather-details">
             <ul>
-              <li>Precipitation: 15%</li>
-              <li>Humidity: 72%</li>
-              <li>Wind: 13 km/h</li>
+              <li>Humidity: {weatherData.humidity}%</li>
+              <li>Wind: {weatherData.wind} km/h</li>
             </ul>
           </div>
         </div>
