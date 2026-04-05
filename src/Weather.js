@@ -60,10 +60,6 @@ export default function Weather(props) {
     search(props.defaultCity);
   }, [props.defaultCity]);
 
-  if (!ready) {
-    return <div className="Weather">Loading...</div>;
-  }
-
   return (
     <div className="Weather">
       <form className="mb-4" onSubmit={handleSubmit}>
@@ -89,34 +85,38 @@ export default function Weather(props) {
         </div>
       </form>
 
-      <div className="weather-body">
-        <div className="overview">
-          <h1>{weatherData.city}</h1>
-          <ul>
-            <li>{formatTime(weatherData.time)}</li>
-            <li>{weatherData.description}</li>
-          </ul>
-        </div>
-
-        <div className="weather-data">
-          <div className="weather-temperature">
-            <img
-              src={weatherData.icon}
-              alt={weatherData.description}
-              className="weather-icon"
-            />
-            <span className="temperature">{weatherData.temperature}</span>
-            <span className="unit">°C</span>
-          </div>
-
-          <div className="weather-details">
+      {ready ? (
+        <div className="weather-body">
+          <div className="overview">
+            <h1>{weatherData.city}</h1>
             <ul>
-              <li>Humidity: {weatherData.humidity}%</li>
-              <li>Wind: {weatherData.wind} km/h</li>
+              <li>{formatTime(weatherData.time)}</li>
+              <li>{weatherData.description}</li>
             </ul>
           </div>
+
+          <div className="weather-data">
+            <div className="weather-temperature">
+              <img
+                src={weatherData.icon}
+                alt={weatherData.description}
+                className="weather-icon"
+              />
+              <span className="temperature">{weatherData.temperature}</span>
+              <span className="unit">°C</span>
+            </div>
+
+            <div className="weather-details">
+              <ul>
+                <li>Humidity: {weatherData.humidity}%</li>
+                <li>Wind: {weatherData.wind} km/h</li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="weather-body">Loading...</div>
+      )}
     </div>
   );
 }
