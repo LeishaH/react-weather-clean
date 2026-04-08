@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import FormattedDate from "./FormattedDate";
 import "./Weather.css";
 
 export default function Weather(props) {
@@ -7,18 +8,6 @@ export default function Weather(props) {
   const [city, setCity] = useState(props.defaultCity);
   const [weatherData, setWeatherData] = useState({});
   const [error, setError] = useState("");
-
-  function formatTime(timestamp) {
-    let date = new Date(timestamp * 1000);
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-
-    if (minutes < 10) {
-      minutes = `0${minutes}`;
-    }
-
-    return `${hours}:${minutes}`;
-  }
 
   function handleResponse(response) {
     setWeatherData({
@@ -30,6 +19,7 @@ export default function Weather(props) {
       humidity: response.data.main.humidity,
       wind: Math.round(response.data.wind.speed),
       time: response.data.dt,
+      timezone: response.data.timezone,
       icon: `https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
     });
 
@@ -114,7 +104,12 @@ export default function Weather(props) {
           <div className="overview">
             <h1>{weatherData.city}</h1>
             <ul>
-              <li>{formatTime(weatherData.time)}</li>
+              <li>
+                <FormattedDate
+                  timestamp={weatherData.time}
+                  timezone={weatherData.timezone}
+                />
+              </li>
               <li>{weatherData.description}</li>
             </ul>
           </div>
