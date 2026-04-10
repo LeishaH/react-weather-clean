@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import FormattedDate from "./FormattedDate";
 
 export default function WeatherInfo(props) {
   let weatherData = props.data;
+  const [unit, setUnit] = useState("celsius");
+
+  function showFahrenheit() {
+    setUnit("fahrenheit");
+  }
+
+  function showCelsius() {
+    setUnit("celsius");
+  }
+
+  function convertToFahrenheit() {
+    return Math.round((weatherData.temperature * 9) / 5 + 32);
+  }
 
   return (
     <div className="weather-body">
@@ -26,8 +39,15 @@ export default function WeatherInfo(props) {
             alt={weatherData.description}
             className="weather-icon"
           />
-          <span className="temperature">{weatherData.temperature}</span>
-          <span className="unit">°C</span>
+          <span className="temperature">
+            {unit === "celsius"
+              ? weatherData.temperature
+              : convertToFahrenheit()}
+          </span>
+          <span className="unit">
+            <span onClick={showCelsius}>°C</span> |{" "}
+            <span onClick={showFahrenheit}>°F</span>
+          </span>
         </div>
 
         <div className="weather-details">
