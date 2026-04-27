@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import WeatherInfo from "./WeatherInfo";
+import WeatherForecast from "./WeatherForecast";
 import "./Weather.css";
 
 export default function Weather(props) {
@@ -85,6 +86,7 @@ export default function Weather(props) {
               value={city}
             />
           </div>
+
           <div className="col-3">
             <input
               type="submit"
@@ -100,7 +102,10 @@ export default function Weather(props) {
           <p>{error}</p>
         </div>
       ) : ready ? (
-        <WeatherInfo data={weatherData} />
+        <>
+          <WeatherInfo data={weatherData} />
+          <WeatherForecast />
+        </>
       ) : (
         <div className="weather-body">Loading...</div>
       )}
