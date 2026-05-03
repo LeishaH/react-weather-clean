@@ -22,6 +22,7 @@ export default function Weather(props) {
       time: response.data.dt,
       timezone: response.data.timezone,
       icon: `https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
+      coordinates: response.data.coord,
     });
 
     setError("");
@@ -104,7 +105,10 @@ export default function Weather(props) {
       ) : ready ? (
         <>
           <WeatherInfo data={weatherData} />
-          <WeatherForecast />
+          <WeatherForecast
+            key={`${weatherData.coordinates.lat}-${weatherData.coordinates.lon}`}
+            coordinates={weatherData.coordinates}
+          />
         </>
       ) : (
         <div className="weather-body">Loading...</div>
