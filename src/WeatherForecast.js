@@ -42,6 +42,14 @@ export default function WeatherForecast(props) {
     });
   }
 
+  function convertTemperature(celsius) {
+    if (props.unit === "fahrenheit") {
+      return Math.round((celsius * 9) / 5 + 32);
+    }
+
+    return Math.round(celsius);
+  }
+
   if (error) {
     return <div className="WeatherForecast">{error}</div>;
   }
@@ -63,10 +71,10 @@ export default function WeatherForecast(props) {
 
                 <div className="WeatherForecastTemperatures">
                   <span className="WeatherForecastTemperatureMax">
-                    {Math.round(dailyForecast.main.temp_max)}°
+                    {convertTemperature(dailyForecast.main.temp_max)}°
                   </span>
                   <span className="WeatherForecastTemperatureMin">
-                    {Math.round(dailyForecast.main.temp_min)}°
+                    {convertTemperature(dailyForecast.main.temp_min)}°
                   </span>
                 </div>
               </div>

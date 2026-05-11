@@ -9,6 +9,7 @@ export default function Weather(props) {
   const [city, setCity] = useState(props.defaultCity);
   const [weatherData, setWeatherData] = useState({});
   const [error, setError] = useState("");
+  const [unit, setUnit] = useState("celsius");
 
   function handleResponse(response) {
     setWeatherData({
@@ -68,6 +69,10 @@ export default function Weather(props) {
     setCity(event.target.value);
   }
 
+  function toggleUnit() {
+    setUnit(unit === "celsius" ? "fahrenheit" : "celsius");
+  }
+
   useEffect(() => {
     search(props.defaultCity);
   }, [props.defaultCity, search]);
@@ -104,10 +109,12 @@ export default function Weather(props) {
         </div>
       ) : ready ? (
         <>
-          <WeatherInfo data={weatherData} />
+          <WeatherInfo data={weatherData} unit={unit} toggleUnit={toggleUnit} />
+
           <WeatherForecast
             key={`${weatherData.coordinates.lat}-${weatherData.coordinates.lon}`}
             coordinates={weatherData.coordinates}
+            unit={unit}
           />
         </>
       ) : (
